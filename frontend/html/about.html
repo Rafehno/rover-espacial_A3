@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rover Espacial — Sobre</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="/">🛰 Rover Espacial</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/">Simulador</a></li>
+          <li class="nav-item"><a class="nav-link" href="/docs">Documentação</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/about">Sobre</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+
+    <h1 class="text-accent mb-1">Sobre o Projeto</h1>
+    <p class="text-muted-space mb-4">
+      Trabalho prático A3 — Teoria da Computação e Compiladores · Unicuritiba · Entrega: 08/06/2025
+    </p>
+
+    <!-- Contexto -->
+    <div class="panel mb-4">
+      <div class="section-title">Contexto da Missão</div>
+      <p style="color:var(--text)">
+        Inspirado nas missões da NASA e no rover <em>Curiosity</em>, este sistema simula o software
+        de navegação de um rover espacial. O rover opera em um grid 2D representando a superfície
+        marciana, executando scripts escritos em uma linguagem de comandos própria.
+      </p>
+      <p style="color:var(--text); margin-bottom:0">
+        O projeto demonstra na prática os conceitos de <strong>análise léxica</strong>,
+        <strong>análise sintática</strong> e <strong>interpretação</strong> — os três estágios
+        fundamentais de um compilador.
+      </p>
+    </div>
+
+    <!-- Arquitetura -->
+    <div class="panel mb-4">
+      <div class="section-title">Arquitetura do Sistema</div>
+      <pre>Script do usuário
+      ↓
+  lexer.py      → Tokenização (análise léxica)
+      ↓
+  parser.py     → Validação sintática
+      ↓
+  interpreter.py → Execução sobre rover + grid
+      ↓
+  main.py (Flask) → API JSON
+      ↓
+  app.js + p5.js  → Animação visual</pre>
+    </div>
+
+    <!-- Stack -->
+    <div class="panel mb-4">
+      <div class="section-title">Stack Tecnológica</div>
+      <table class="table cmd-table mb-0">
+        <thead>
+          <tr><th>Camada</th><th>Tecnologia</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Servidor</td><td>Flask 3.x · Python 3.10+</td></tr>
+          <tr><td>Visualização</td><td>p5.js 1.9</td></tr>
+          <tr><td>UI / Layout</td><td>Bootstrap 5.3 (local)</td></tr>
+          <tr><td>Comunicação</td><td>Fetch API · JSON</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Equipe -->
+    <div class="panel mb-4">
+      <div class="section-title">Equipe</div>
+      <div class="row g-3 mt-1">
+        <div class="col-sm-6 col-md-4">
+          <div class="member-card">
+            <div class="member-avatar">👨‍💻</div>
+            <div style="color:var(--text);font-weight:600">Membro 1</div>
+            <div class="text-muted-space" style="font-size:.85rem">Backend · Compilador</div>
+            <div class="text-muted-space" style="font-size:.78rem">lexer · parser</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="member-card">
+            <div class="member-avatar">👩‍💻</div>
+            <div style="color:var(--text);font-weight:600">Membro 2</div>
+            <div class="text-muted-space" style="font-size:.85rem">Backend · Simulador</div>
+            <div class="text-muted-space" style="font-size:.78rem">rover · grid</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="member-card">
+            <div class="member-avatar">🎨</div>
+            <div style="color:var(--text);font-weight:600">Membro 3</div>
+            <div class="text-muted-space" style="font-size:.85rem">Frontend · Simulador</div>
+            <div class="text-muted-space" style="font-size:.78rem">p5.js · app.js</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="member-card">
+            <div class="member-avatar">📄</div>
+            <div style="color:var(--text);font-weight:600">Membro 4</div>
+            <div class="text-muted-space" style="font-size:.85rem">Frontend · Páginas</div>
+            <div class="text-muted-space" style="font-size:.78rem">docs · about</div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="member-card">
+            <div class="member-avatar">🔗</div>
+            <div style="color:var(--text);font-weight:600">Membro 5</div>
+            <div class="text-muted-space" style="font-size:.85rem">Integração · Docs</div>
+            <div class="text-muted-space" style="font-size:.78rem">Flask API · testes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
