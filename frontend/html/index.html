@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rover Espacial - Simulador</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="/">🛰 Rover Espacial</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="/">Simulador</a></li>
+          <li class="nav-item"><a class="nav-link" href="/docs">Documentação</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about">Sobre</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="container-fluid px-4 py-3">
+    <div class="row g-3">
+
+      <!-- Coluna esquerda: editor + controles -->
+      <div class="col-lg-4 d-flex flex-column gap-3">
+
+        <!-- Editor -->
+        <div class="panel">
+          <div class="section-title">Script</div>
+          <textarea id="editor" spellcheck="false" placeholder="# Escreva seus comandos aqui&#10;MOVE 3&#10;RIGHT&#10;MOVE 2&#10;SCAN"></textarea>
+          <div class="d-flex gap-2 mt-2">
+            <button class="btn btn-run flex-fill" onclick="runScript()">▶ Executar</button>
+            <button class="btn btn-validate" onclick="validateScript()">✓ Validar</button>
+            <button class="btn btn-reset" onclick="resetSim()">↺</button>
+          </div>
+          <div class="mt-2 d-flex align-items-center gap-2">
+            <span class="section-title mb-0">Status</span>
+            <span id="status-badge" class="badge bg-secondary">Pronto</span>
+          </div>
+        </div>
+
+        <!-- Configurações do grid -->
+        <div class="panel">
+          <div class="section-title">Configuração do Grid</div>
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="control-label">Largura</div>
+              <input type="number" id="grid-width" value="10" min="5" max="20" />
+            </div>
+            <div class="col-6">
+              <div class="control-label">Altura</div>
+              <input type="number" id="grid-height" value="10" min="5" max="20" />
+            </div>
+            <div class="col-4">
+              <div class="control-label">Início X</div>
+              <input type="number" id="start-x" value="0" min="0" />
+            </div>
+            <div class="col-4">
+              <div class="control-label">Início Y</div>
+              <input type="number" id="start-y" value="0" min="0" />
+            </div>
+            <div class="col-4">
+              <div class="control-label">Direção</div>
+              <select id="start-dir">
+                <option value="N">Norte</option>
+                <option value="E">Leste</option>
+                <option value="S">Sul</option>
+                <option value="W">Oeste</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-2">
+            <div class="control-label">Obstáculos (clique no grid)</div>
+            <button class="btn btn-reset w-100 mt-1" onclick="clearObstacles()">Limpar obstáculos</button>
+          </div>
+        </div>
+
+        <!-- Log -->
+        <div class="panel flex-fill">
+          <div class="section-title">Log de execução</div>
+          <div id="log-panel"><span class="text-muted-space">Aguardando execução...</span></div>
+        </div>
+
+      </div>
+
+      <!-- Coluna direita: canvas -->
+      <div class="col-lg-8">
+        <div class="panel h-100 p-2">
+          <div class="section-title">Simulador Visual</div>
+          <div id="canvas-wrapper"></div>
+
+          <!-- Legenda -->
+          <div class="d-flex gap-3 mt-2 flex-wrap">
+            <span class="text-muted-space" style="font-size:.8rem">
+              <span style="color:#4fc3f7">■</span> Rover
+            </span>
+            <span class="text-muted-space" style="font-size:.8rem">
+              <span style="color:#ef5350">■</span> Obstáculo
+            </span>
+            <span class="text-muted-space" style="font-size:.8rem">
+              <span style="color:#1a3a5c">■</span> Rastro
+            </span>
+            <span class="text-muted-space" style="font-size:.8rem">
+              <span style="color:#263238">■</span> Grid
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/p5.min.js"></script>
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
