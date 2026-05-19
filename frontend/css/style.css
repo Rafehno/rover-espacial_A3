@@ -147,9 +147,25 @@ input[type="number"]:focus, select:focus {
 }
 
 /* ── Docs page ────────────────────────────────────────────────── */
-.cmd-table th { color: var(--accent); border-color: var(--space-border) !important; }
-.cmd-table td { border-color: var(--space-border) !important; color: var(--text); }
-.cmd-table     { background: var(--space-surface); }
+.cmd-table {
+  --bs-table-bg:           var(--space-surface);
+  --bs-table-striped-bg:   #111627;
+  --bs-table-hover-bg:     #192035;
+  --bs-table-border-color: var(--space-border);
+  --bs-table-color:        var(--text);
+  background: var(--space-surface);
+}
+
+.cmd-table th {
+  color: var(--accent);
+  border-color: var(--space-border) !important;
+  background: var(--space-surface);
+}
+
+.cmd-table td {
+  border-color: var(--space-border) !important;
+  color: var(--text);
+}
 
 code {
   background: #090c18;
