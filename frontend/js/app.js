@@ -10,34 +10,50 @@ let trail = [];
 
 // ── p5.js sketch ─────────────────────────────────────────────────────────
 const sketch = (p) => {
-  const CELL = 44;
-  const PAD  = 2;
+
+  // Calcula o tamanho de célula ideal para o espaço disponível
+  function cellSize() {
+    const wrapper = document.getElementById('canvas-wrapper');
+    const margin = 16;
+    const maxW = Math.floor((wrapper.clientWidth  - margin) / gridConfig.width);
+    const maxH = Math.floor((wrapper.clientHeight - margin) / gridConfig.height);
+    return Math.max(Math.min(maxW, maxH), 16);
+  }
+
+  // Offsets para centralizar o grid no canvas
+  function gridOffset(cell) {
+    const gw = gridConfig.width  * cell;
+    const gh = gridConfig.height * cell;
+    return {
+      ox: Math.floor((p.width  - gw) / 2),
+      oy: Math.floor((p.height - gh) / 2),
+    };
+  }
 
   p.setup = () => {
     const wrapper = document.getElementById('canvas-wrapper');
-    const w = wrapper.clientWidth  || 480;
-    const h = wrapper.clientHeight || 480;
-    const canvas = p.createCanvas(w, h);
+    const canvas = p.createCanvas(wrapper.clientWidth || 480, wrapper.clientHeight || 480);
     canvas.parent('canvas-wrapper');
     p.noLoop();
-    drawGrid(p, CELL, PAD);
+    p.redraw();
   };
 
   p.draw = () => {
-    drawGrid(p, CELL, PAD);
+    const cell = cellSize();
+    const { ox, oy } = gridOffset(cell);
+    drawGrid(p, cell, ox, oy);
   };
 
   p.mousePressed = () => {
-    const col = Math.floor((p.mouseX - PAD) / CELL);
-    const row = Math.floor((p.mouseY - PAD) / CELL);
+    const cell = cellSize();
+    const { ox, oy } = gridOffset(cell);
+    const col = Math.floor((p.mouseX - ox) / cell);
+    const row = Math.floor((p.mouseY - oy) / cell);
     if (col < 0 || row < 0 || col >= gridConfig.width || row >= gridConfig.height) return;
 
     const idx = obstacles.findIndex(o => o[0] === col && o[1] === row);
-    if (idx >= 0) {
-      obstacles.splice(idx, 1);
-    } else {
-      obstacles.push([col, row]);
-    }
+    if (idx >= 0) obstacles.splice(idx, 1);
+    else obstacles.push([col, row]);
     p.redraw();
   };
 
@@ -47,7 +63,7 @@ const sketch = (p) => {
     p.redraw();
   };
 
-  function drawGrid(p, cell, pad) {
+  function drawGrid(p, cell, ox, oy) {
     p.background('#090c18');
 
     const cols = gridConfig.width;
@@ -55,8 +71,8 @@ const sketch = (p) => {
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        const x = pad + c * cell;
-        const y = pad + r * cell;
+        const x = ox + c * cell;
+        const y = oy + r * cell;
 
         if (trail.some(t => t[0] === c && t[1] === r)) {
           p.fill('#1a3a5c');
@@ -75,8 +91,8 @@ const sketch = (p) => {
     }
 
     obstacles.forEach(([c, r]) => {
-      const x = pad + c * cell;
-      const y = pad + r * cell;
+      const x = ox + c * cell;
+      const y = oy + r * cell;
       p.fill('#ef5350');
       p.noStroke();
       p.textAlign(p.CENTER, p.CENTER);
@@ -84,19 +100,19 @@ const sketch = (p) => {
       p.text('✕', x + cell / 2, y + cell / 2);
     });
 
-    drawRover(p, roverState.x, roverState.y, roverState.dir, cell, pad);
+    drawRover(p, roverState.x, roverState.y, roverState.dir, cell, ox, oy);
   }
 
-  function drawRover(p, col, row, dir, cell, pad) {
-    const x = pad + col * cell + cell / 2;
-    const y = pad + row * cell + cell / 2;
+  function drawRover(p, col, row, dir, cell, ox, oy) {
+    const x = ox + col * cell + cell / 2;
+    const y = oy + row * cell + cell / 2;
     const r = cell * 0.32;
 
     p.push();
     p.translate(x, y);
 
     const angles = { N: 0, E: p.HALF_PI, S: p.PI, W: -p.HALF_PI };
-    p.rotate(angles[dir] || 0);
+    p.rotate(angles[dir] ?? 0);
 
     p.fill('#4fc3f7');
     p.noStroke();
@@ -143,6 +159,7 @@ function clearObstacles() {
 }
 
 function resetSim() {
+  if (!validateInputs()) return;
   clearAnimTimer();
   steps = [];
   currentStep = -1;
@@ -193,6 +210,7 @@ async function validateScript() {
 }
 
 async function runScript() {
+  if (!validateInputs()) return;
   clearAnimTimer();
   const script = document.getElementById('editor').value;
 
@@ -320,6 +338,54 @@ function animateSteps(apiSteps, logLines) {
 
 function clearAnimTimer() {
   if (animTimer) { clearTimeout(animTimer); animTimer = null; }
+}
+
+// ── Erros visuais ─────────────────────────────────────────────────────────
+
+let errorTimer = null;
+
+function showError(message) {
+  const card = document.getElementById('error-card');
+  document.getElementById('error-message').textContent = message;
+  card.classList.remove('d-none');
+  clearTimeout(errorTimer);
+  errorTimer = setTimeout(dismissError, 4000);
+}
+
+function dismissError() {
+  document.getElementById('error-card').classList.add('d-none');
+}
+
+// ── Validação dos inputs ──────────────────────────────────────────────────
+
+function validateInputs() {
+  const w = parseInt(document.getElementById('grid-width').value.trim(), 10);
+  const h = parseInt(document.getElementById('grid-height').value.trim(), 10);
+  const x = parseInt(document.getElementById('start-x').value.trim(), 10);
+  const y = parseInt(document.getElementById('start-y').value.trim(), 10);
+
+  if (!Number.isInteger(w) || w < 5 || w > 20) {
+    document.getElementById('grid-width').value = 10;
+    showError('Largura inválida. Use um inteiro entre 5 e 20.');
+    return false;
+  }
+  if (!Number.isInteger(h) || h < 5 || h > 20) {
+    document.getElementById('grid-height').value = 10;
+    showError('Altura inválida. Use um inteiro entre 5 e 20.');
+    return false;
+  }
+  if (!Number.isInteger(x) || x < 0 || x >= w) {
+    document.getElementById('start-x').value = 0;
+    showError(`Início X inválido. Use um inteiro entre 0 e ${w - 1}.`);
+    return false;
+  }
+  if (!Number.isInteger(y) || y < 0 || y >= h) {
+    document.getElementById('start-y').value = 0;
+    showError(`Início Y inválido. Use um inteiro entre 0 e ${h - 1}.`);
+    return false;
+  }
+
+  return true;
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────

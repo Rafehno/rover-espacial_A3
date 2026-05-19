@@ -86,15 +86,19 @@ body {
 }
 .btn-reset:hover { color: var(--danger); border-color: var(--danger); }
 
+/* ── Canvas panel (coluna direita) ────────────────────────────── */
+.canvas-panel {
+  display: flex;
+  flex-direction: column;
+}
+
 /* ── Canvas wrapper ───────────────────────────────────────────── */
 #canvas-wrapper {
+  flex: 1;
+  min-height: 400px;
   background: #090c18;
   border: 1px solid var(--space-border);
   border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 480px;
   overflow: hidden;
 }
 
@@ -225,3 +229,40 @@ pre {
 
 .text-accent       { color: var(--accent); }
 .text-muted-space  { color: var(--text-muted); }
+
+/* ── Card de erro flutuante ───────────────────────────────────── */
+.error-card {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background: #3b1010;
+  border: 1px solid var(--danger);
+  color: #ffb3b3;
+  border-radius: 8px;
+  padding: 0.65rem 1.1rem;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  max-width: 480px;
+  animation: slideDown 0.18s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.error-close {
+  background: none;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
