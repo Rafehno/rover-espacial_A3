@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rover Espacial — Documentação</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="/">🛰 Rover Espacial</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/">Simulador</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/docs">Documentação</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about">Sobre</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+
+    <h1 class="text-accent mb-1">Documentação da Linguagem</h1>
+    <p class="text-muted-space mb-4">Referência completa dos comandos do Rover Espacial.</p>
+
+    <!-- Gramática -->
+    <div class="panel mb-4">
+      <div class="section-title">Gramática Formal (GLC)</div>
+      <pre>programa  → comando+
+comando   → cmd_move | cmd_back | cmd_left | cmd_right | cmd_scan
+
+cmd_move  → "MOVE" NUMERO
+cmd_back  → "BACK" NUMERO
+cmd_left  → "LEFT"
+cmd_right → "RIGHT"
+cmd_scan  → "SCAN"
+
+NUMERO    → [1-9][0-9]*</pre>
+    </div>
+
+    <!-- Tabela de comandos -->
+    <div class="panel mb-4">
+      <div class="section-title">Comandos Disponíveis</div>
+      <table class="table cmd-table mb-0">
+        <thead>
+          <tr>
+            <th>Comando</th>
+            <th>Sintaxe</th>
+            <th>Descrição</th>
+            <th>Exemplo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Avançar</td>
+            <td><code>MOVE n</code></td>
+            <td>Avança <em>n</em> casas na direção atual</td>
+            <td><code>MOVE 3</code></td>
+          </tr>
+          <tr>
+            <td>Recuar</td>
+            <td><code>BACK n</code></td>
+            <td>Recua <em>n</em> casas na direção oposta</td>
+            <td><code>BACK 2</code></td>
+          </tr>
+          <tr>
+            <td>Girar esq.</td>
+            <td><code>LEFT</code></td>
+            <td>Gira 90° à esquerda</td>
+            <td><code>LEFT</code></td>
+          </tr>
+          <tr>
+            <td>Girar dir.</td>
+            <td><code>RIGHT</code></td>
+            <td>Gira 90° à direita</td>
+            <td><code>RIGHT</code></td>
+          </tr>
+          <tr>
+            <td>Detectar</td>
+            <td><code>SCAN</code></td>
+            <td>Detecta obstáculo na célula à frente</td>
+            <td><code>SCAN</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Regras -->
+    <div class="panel mb-4">
+      <div class="section-title">Regras de Sintaxe</div>
+      <ul class="mb-0" style="color:var(--text)">
+        <li>Cada comando ocupa <strong>uma linha</strong></li>
+        <li>Comandos são <strong>case-insensitive</strong> — <code>MOVE</code> = <code>move</code> = <code>Move</code></li>
+        <li><code>n</code> deve ser um inteiro <strong>positivo</strong> ≥ 1</li>
+        <li>Linhas em branco são <strong>ignoradas</strong></li>
+        <li>Comentários com <code>#</code> são <strong>ignorados</strong></li>
+      </ul>
+    </div>
+
+    <!-- Comportamento bordas -->
+    <div class="panel mb-4">
+      <div class="section-title">Bordas e Colisões</div>
+      <ul class="mb-0" style="color:var(--text)">
+        <li>Se o rover atingir a <strong>borda do grid</strong>, o movimento é cancelado e registrado no log</li>
+        <li>Se houver um <strong>obstáculo</strong> no caminho, o movimento para naquela célula</li>
+        <li><code>SCAN</code> retorna se há obstáculo <em>imediatamente</em> à frente (1 célula)</li>
+      </ul>
+    </div>
+
+    <!-- Exemplos -->
+    <div class="panel mb-4">
+      <div class="section-title">Exemplos de Scripts</div>
+
+      <p class="text-muted-space mb-1">Missão básica</p>
+      <pre>MOVE 3
+RIGHT
+MOVE 2
+SCAN
+LEFT
+MOVE 1</pre>
+
+      <p class="text-muted-space mb-1 mt-3">Patrulha em L</p>
+      <pre>MOVE 4
+RIGHT
+MOVE 4
+RIGHT
+MOVE 4</pre>
+
+      <p class="text-muted-space mb-1 mt-3">Exploração com scan</p>
+      <pre>SCAN
+MOVE 2
+LEFT
+SCAN
+MOVE 3
+RIGHT
+MOVE 1
+SCAN</pre>
+    </div>
+
+    <!-- Erros -->
+    <div class="panel mb-4">
+      <div class="section-title">Erros Detectados</div>
+      <table class="table cmd-table mb-0">
+        <thead>
+          <tr><th>Tipo de erro</th><th>Exemplo</th><th>Mensagem</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Comando desconhecido</td>
+            <td><code>FLY 3</code></td>
+            <td>Comando desconhecido: 'FLY'</td>
+          </tr>
+          <tr>
+            <td>Argumento inválido</td>
+            <td><code>MOVE -1</code></td>
+            <td>MOVE requer inteiro positivo</td>
+          </tr>
+          <tr>
+            <td>Argumento ausente</td>
+            <td><code>MOVE</code></td>
+            <td>MOVE requer exatamente um argumento</td>
+          </tr>
+          <tr>
+            <td>Argumento indesejado</td>
+            <td><code>LEFT 2</code></td>
+            <td>LEFT não aceita argumentos</td>
+          </tr>
+          <tr>
+            <td>Programa vazio</td>
+            <td><em>(arquivo em branco)</em></td>
+            <td>Nenhum comando encontrado</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
