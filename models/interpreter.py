@@ -1,11 +1,12 @@
+# Executa os tokens sobre o rover e grid, retornando o histórico de passos para animação
 def interpret(tokens, rover, grid):
     steps = []
-    log = []
+    log   = []
 
     for token in tokens:
         before = rover.to_dict()
         result = _execute(token, rover, grid)
-        after = rover.to_dict()
+        after  = rover.to_dict()
 
         steps.append({
             "command": token.type,
@@ -22,6 +23,7 @@ def interpret(tokens, rover, grid):
     return steps, log
 
 
+# Despacha o token para a função de execução correta
 def _execute(token, rover, grid):
     if token.type == 'MOVE':
         return _move(rover, grid, token.value, forward=True)
@@ -34,27 +36,23 @@ def _execute(token, rover, grid):
         rover.turn_right()
         return {"success": True, "message": f"Girou à direita → {rover.direction}"}
     if token.type == 'SCAN':
-        nx, ny = rover.next_position()
+        nx, ny  = rover.next_position()
         blocked = grid.is_blocked(nx, ny)
-        msg = "Obstáculo detectado à frente" if blocked else "Caminho livre à frente"
+        msg     = "Obstáculo detectado à frente" if blocked else "Caminho livre à frente"
         return {"success": True, "message": msg, "scan_result": blocked}
 
 
+# Move o rover célula a célula, parando ao bater em borda ou obstáculo
 def _move(rover, grid, steps, forward):
     moved = 0
+
     for _ in range(steps):
         nx, ny = rover.next_position() if forward else rover.prev_position()
 
         if not grid.is_valid(nx, ny):
-            return {
-                "success": False,
-                "message": f"Bloqueado: borda do grid em ({nx},{ny}) após {moved} passo(s)",
-            }
+            return {"success": False, "message": f"Bloqueado: borda do grid em ({nx},{ny}) após {moved} passo(s)"}
         if grid.has_obstacle(nx, ny):
-            return {
-                "success": False,
-                "message": f"Bloqueado: obstáculo em ({nx},{ny}) após {moved} passo(s)",
-            }
+            return {"success": False, "message": f"Bloqueado: obstáculo em ({nx},{ny}) após {moved} passo(s)"}
 
         rover.x, rover.y = nx, ny
         moved += 1

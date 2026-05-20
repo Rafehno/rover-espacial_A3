@@ -23,6 +23,12 @@
     </div>
   </nav>
 
+  <!-- Card de erro flutuante -->
+  <div id="error-card" class="error-card d-none">
+    <span id="error-message"></span>
+    <button class="error-close" onclick="dismissError()">✕</button>
+  </div>
+
   <!-- Main -->
   <main class="container-fluid px-4 py-3">
     <div class="row g-3">
@@ -37,11 +43,28 @@
           <div class="d-flex gap-2 mt-2">
             <button class="btn btn-run flex-fill" onclick="runScript()">▶ Executar</button>
             <button class="btn btn-validate" onclick="validateScript()">✓ Validar</button>
-            <button class="btn btn-reset" onclick="resetSim()">↺</button>
+            <button class="btn btn-reset" onclick="resetSim()" title="Reiniciar">↺</button>
+            <button class="btn btn-reset" onclick="exportScript()" title="Exportar script">⤓</button>
           </div>
           <div class="mt-2 d-flex align-items-center gap-2">
             <span class="section-title mb-0">Status</span>
             <span id="status-badge" class="badge bg-secondary">Pronto</span>
+          </div>
+          <!-- Velocidade da animação -->
+          <div class="d-flex align-items-center gap-2 mt-2">
+            <span class="control-label mb-0" style="white-space:nowrap">Velocidade</span>
+            <input type="range" id="anim-speed" min="80" max="900" value="280" step="40" style="flex:1">
+            <span id="speed-label" class="text-muted-space" style="font-size:.75rem;width:38px;text-align:right">280ms</span>
+          </div>
+          <!-- Pausar ao iniciar -->
+          <div class="d-flex align-items-center gap-2 mt-1">
+            <input type="checkbox" id="pause-on-start" class="form-check-input" style="margin:0;cursor:pointer">
+            <label for="pause-on-start" class="control-label mb-0" style="cursor:pointer">Pausar ao iniciar</label>
+          </div>
+          <!-- Controles de animação (visível apenas durante/após execução) -->
+          <div id="anim-controls" class="d-flex gap-2 mt-2" style="visibility:hidden">
+            <button class="btn btn-reset flex-fill" id="btn-pause" onclick="togglePause()">⏸ Pausar</button>
+            <button class="btn btn-reset" id="btn-next" onclick="stepForward()" disabled>⏭ Próximo</button>
           </div>
         </div>
 
@@ -51,19 +74,19 @@
           <div class="row g-2">
             <div class="col-6">
               <div class="control-label">Largura</div>
-              <input type="number" id="grid-width" value="10" min="5" max="20" />
+              <input type="number" id="grid-width" value="10" />
             </div>
             <div class="col-6">
               <div class="control-label">Altura</div>
-              <input type="number" id="grid-height" value="10" min="5" max="20" />
+              <input type="number" id="grid-height" value="10" />
             </div>
             <div class="col-4">
               <div class="control-label">Início X</div>
-              <input type="number" id="start-x" value="0" min="0" />
+              <input type="number" id="start-x" value="0" />
             </div>
             <div class="col-4">
               <div class="control-label">Início Y</div>
-              <input type="number" id="start-y" value="0" min="0" />
+              <input type="number" id="start-y" value="0" />
             </div>
             <div class="col-4">
               <div class="control-label">Direção</div>
@@ -90,25 +113,30 @@
       </div>
 
       <!-- Coluna direita: canvas -->
-      <div class="col-lg-8">
-        <div class="panel h-100 p-2">
-          <div class="section-title">Simulador Visual</div>
+      <div class="col-lg-8 d-flex flex-column">
+        <div class="panel flex-fill canvas-panel">
+          <div class="section-title mb-2">Simulador Visual</div>
           <div id="canvas-wrapper"></div>
 
-          <!-- Legenda -->
-          <div class="d-flex gap-3 mt-2 flex-wrap">
-            <span class="text-muted-space" style="font-size:.8rem">
-              <span style="color:#4fc3f7">■</span> Rover
-            </span>
-            <span class="text-muted-space" style="font-size:.8rem">
-              <span style="color:#ef5350">■</span> Obstáculo
-            </span>
-            <span class="text-muted-space" style="font-size:.8rem">
-              <span style="color:#1a3a5c">■</span> Rastro
-            </span>
-            <span class="text-muted-space" style="font-size:.8rem">
-              <span style="color:#263238">■</span> Grid
-            </span>
+          <!-- Legenda + estado do rover -->
+          <div class="d-flex gap-3 mt-2 flex-wrap align-items-center justify-content-between">
+            <div class="d-flex gap-3 flex-wrap">
+              <span class="text-muted-space" style="font-size:.8rem">
+                <span style="color:#4fc3f7">■</span> Rover
+              </span>
+              <span class="text-muted-space" style="font-size:.8rem">
+                <span style="color:#ef5350">■</span> Obstáculo
+              </span>
+              <span class="text-muted-space" style="font-size:.8rem">
+                <span style="color:#1a3a5c">■</span> Rastro
+              </span>
+              <span class="text-muted-space" style="font-size:.8rem">
+                <span style="color:#263238">■</span> Grid
+              </span>
+            </div>
+            <div class="text-muted-space" style="font-size:.8rem;font-family:'Courier New',monospace">
+              X: <span id="rv-x">0</span> &nbsp;·&nbsp; Y: <span id="rv-y">0</span> &nbsp;·&nbsp; Dir: <span id="rv-dir">N</span>
+            </div>
           </div>
         </div>
       </div>
