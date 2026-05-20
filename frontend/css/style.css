@@ -94,6 +94,7 @@ body {
 
 /* ── Canvas wrapper ───────────────────────────────────────────── */
 #canvas-wrapper {
+  position: relative;
   flex: 1;
   min-height: 400px;
   background: #090c18;
@@ -210,6 +211,35 @@ pre {
   align-items: center;
   justify-content: center;
   margin: 0 auto 0.75rem;
+}
+
+/* ── Range (velocidade) ───────────────────────────────────────── */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--space-border);
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
 }
 
 /* ── Scrollbar ────────────────────────────────────────────────── */
