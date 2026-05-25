@@ -113,10 +113,10 @@ python main.py
 
 ## Equipe
 
-| Responsabilidade | Arquivos principais |
+| Nome | RA |
 |-----------------|---------------------|
-| Backend — Compilador | `lexer.py`, `parser.py` |
-| Backend — Simulador | `rover.py`, `grid.py` |
-| Frontend — Simulador | `app.js`, `index.html` |
-| Frontend — Páginas | `docs.html`, `about.html` |
-| Integração + Docs | `main.py`, `interpreter.py` |
+| Diogo Varela | `172316253` |
+| Gabriel Fernandes | `172317728` |
+| João Brasil | `172311360` |
+| Gabriel Klein | `172312555` |
+| João Demech | `1726111321` |
